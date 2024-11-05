@@ -2,10 +2,13 @@ let studentData= (req,res)=>{
     let jokes = [
         {
             id:1,
-            name:'anmol'
+            title:'jokes',
+            jokes:"this is first joke"
         },
         {
-            data:"is over"
+            id:2,
+             title:'jokes',
+            jokes:"this is second joke"
         }
     ]
     res.send(jokes)

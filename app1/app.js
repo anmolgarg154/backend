@@ -1,9 +1,10 @@
-
+import cors from 'cors'
 import  express from 'express'
-let app=express()
 import web from './routes/web.js'
-
+let app=express()
 let port =3000
+
+app.use(cors())
 app.use("/",web)
 
 app.listen(port,()=>{
