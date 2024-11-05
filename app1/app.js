@@ -1,15 +1,12 @@
-require('dotenv').config()
-let express =require('express')
+
+import  express from 'express'
 let app=express()
+import web from './routes/web.js'
 
 let port =3000
-app.get("/",(req,res)=>{
-    res.render('a1.ejs')
+app.use("/",web)
+
+app.listen(port,()=>{
+  console.log(`server at http://localhost:${port}`);
+  
 })
-app.get("/about/:name/:age",(req,res)=>{
-  console.log( req.params.aa);
-  console.log( req.params.aa);
-    res.send(`name-${req.params.name} age-${req.params.age}`)
-    res.send(req.params)
-})
-app.listen(process.env.PORT)
