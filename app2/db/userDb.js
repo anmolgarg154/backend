@@ -11,3 +11,13 @@ export let connectDb = async ()=>{
     }
 }
 
+//  export let connectdbdb = async ()=>{
+//     try {
+//         await mongoose.connect("")
+//         console.log("db connected successfully");
+        
+//     } catch (error) {
+//         console.log(error);
+        
+//     }
+// }

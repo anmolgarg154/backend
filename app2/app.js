@@ -1,14 +1,20 @@
 
 import  express from 'express'
 import { connectDb } from './db/userDb.js'
+import dotenv from 'dotenv';
+dotenv.config();
+
 let app=express()
-let port =3000
+let port =process.env.PORT
 
 
+connectDb();
 
-connectDb()
 app.get("/",(req,res)=>{
     res.send("hello")
 })
 
-app.listen(port)
+app.listen(port,()=>{
+    console.log(`server listening at http://localhost:${port}`);
+    
+})
