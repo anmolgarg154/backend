@@ -1,20 +1,19 @@
-
-import  express from 'express'
-import { connectDb } from './db/userDb.js'
-import dotenv from 'dotenv';
-dotenv.config();
-
-let app=express()
-let port =process.env.PORT
+import express from "express";
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 
-connectDb();
+let a1=express()
 
-app.get("/",(req,res)=>{
-    res.send("hello")
-})
+a1.use(cors({
+    origin:"*",
+    credentials:true
+}))
 
-app.listen(port,()=>{
-    console.log(`server listening at http://localhost:${port}`);
-    
-})
+
+// routes import 
+import userRouter from './routes/user-routes.js'
+
+a1.use("/users",userRouter)
+
+export {a1}
