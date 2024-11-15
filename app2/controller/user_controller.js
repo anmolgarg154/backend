@@ -1,12 +1,12 @@
 import { ApiError } from "../utlis/apiError.js";
 import {asyncHandler} from "../utlis/async-handler.js"
-import {user} from '../model/user-model.js'
+import {User } from '../model/user-model.js'
 import {uploadOnCloudnary} from '../utlis/cloudnary.js'
 import {ApiResponse} from "../utlis/apiResponse.js"
 
 let registerUser =asyncHandler(async (req,res)=>{
-   const {fullName,password,email,userName}=req.body
-   console.log('email: ',email);
+    // res.status(200).json({mesage:"ok"})
+
 
 //    get user details from frontend
 //   validation - not empty
@@ -18,22 +18,26 @@ let registerUser =asyncHandler(async (req,res)=>{
 //  check for user creation
 //  return res
 
+  
+   const {fullName,password,email,userName} = req.body
+    console.log('email: ',email);
+    console.log(req.body);
 
    // simple method of validation
 
-//   if(fullName===""){
-//     throw new ApiError(400,"fullname is required")
-//    }
+  // if(fullName === ""){
+  //   throw new ApiError(400,"fullname is required")
+  //  }
   
-// best method of validation
+//    best method of validation
 
-    if([fullName,password,email,userName].some((field)=>field.trim()===""))
+    if([fullName,password,email,userName].some((field) => field?.trim() === ""))
     {
         throw new ApiError(400,"all fields is required")
     }
       
-    const exitedUser=user.findOne({
-        $or:[{ userName },{ email }]
+    const exitedUser= await User.findOne({
+        $or: [{ userName },{ email }]
     })
 
     if(exitedUser)
@@ -41,30 +45,43 @@ let registerUser =asyncHandler(async (req,res)=>{
         throw new ApiError(409,"username or email is already exists")
     }
 
-    const avatorLocalPath = req.files?.avator[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+     const avatarLocalPath = req.files?.avatar[0]?.path;
+    //  console.log("PPATH",avatarLocalPath);
+     
+   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+   let coverImageLocalPath;
+   if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+       coverImageLocalPath = req.files.coverImage[0].path
+   }
 
-    if(!avatorLocalPath)
+    if(!avatarLocalPath)
     {
-        throw new ApiError(400,"avator file is required")
+        console.log("avatar : ",avatarLocalPath );
+        
+        throw new ApiError(400,"avatar filee is required")
     }
 
-      const avator= await uploadOnCloudnary(avatorLocalPath)
+      const avatar= await uploadOnCloudnary(avatarLocalPath)
       const coverImage = await uploadOnCloudnary(coverImageLocalPath);
 
-      if(!avator){
-        throw new ApiError(400,"avator file is required")
+    //   console.log('ava : ',avatar);
+      
+      if(!avatar){
+        console.log("ava2",avatar);
+        
+        throw new ApiError(400,"avatar file is required")
       }
 
-     const userData= user.create({
-        fullName,
-        avator:avator.url,
-        coverImage:coverImage?.url || '',
+     const  user= await User.create({
+         fullName,
+         avatar:avatar.url,
+         coverImage:coverImage?.url || "",
         email,
         password,
-        userName:userName.lowerCase()
+        userName:userName.toLowerCase()
       })
-       const createdUser = await userData.findById(userData._id).select("-password  -refreshtoken")
+
+       const createdUser =await User.findById(user._id).select("-password  -refreshToken ")
        if(!createdUser)
        {
         throw new ApiError(500, "something went wrong while registering")
@@ -74,4 +91,20 @@ let registerUser =asyncHandler(async (req,res)=>{
          new ApiResponse(200,createdUser,"User registered successfully")
        )
 })
-export {registerUser}
+
+ let loginUSer=asyncHandler(async(req,res)=>{
+    const {userName,email,password}=req.body
+
+    if(!userName || !email){
+      throw new ApiError(400,"username or email is required")
+    }
+   const user=await User.findOne({
+      $or :[{userName},{email}]
+    })
+
+    if(!user){
+      throw new ApiError(400,"user does not exist")
+    }
+ })
+export {registerUser,loginUSer
+}

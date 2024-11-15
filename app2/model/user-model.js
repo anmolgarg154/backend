@@ -1,9 +1,10 @@
 import mongoose, { mongo, Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt'
+
 let userSchema= mongoose.Schema(
     {
-        username:{
+        userName:{
             type:String,
             required:true,
             unique:true,
@@ -22,7 +23,7 @@ let userSchema= mongoose.Schema(
             unique:true,
             lowerCase:true,
         },
-        fullname:{
+        fullName:{
             type:String,
             required:[true,"fullname must required"],
             unique:true,
@@ -34,11 +35,11 @@ let userSchema= mongoose.Schema(
         }],
         coverImage:{
             type:String,
-            required:true
+        //     required:true
         },
-        avator:{
+        avatar:{
             type:String,
-            required:true
+          //   required:true
         },
         refreshToken:{
             type:String
@@ -47,23 +48,25 @@ let userSchema= mongoose.Schema(
     },
     {timestamps:true}
 )
+userSchema.pre("save", async function (next) {
+    if(!this.isModified("password")) return next();
 
-userSchema.pre("save", async function (next){
-    if(! this.ismodified("password")) return next();
-
-   this.password = await bcrypt.hash(this.password,10)
-   next()
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
 })
+
 userSchema.method.isPasswordCorrect = async function (password){
    return await bcrypt.compare(password,this.password)
 }
 
 userSchema.methods.generateAccessToken=function (){
-   return  jwt.sign({
+   return  jwt.sign
+   (
+    {
           _id:this._id,
           email:this.email,
-          username:this.username,
-          fullname:this.fullname
+          userName:this.username,
+          fullName:this.fullname
         },
         eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYW5tb2wifQ.FNLF7hPy5yPnv6wgglxiMYegzm6DAYH6VYVVIs4zxBw  ,
         {  
@@ -75,8 +78,8 @@ userSchema.methods.generateRefreshToken=function (){
     return  jwt.sign({
         _id:this._id,
         email:this.email,
-        username:this.username,
-        fullname:this.fullname
+        userName:this.username,
+        fullName:this.fullname
       },
        123  ,
       {  
@@ -85,4 +88,4 @@ userSchema.methods.generateRefreshToken=function (){
   )
 }
 
-export let userModel=mongoose.model("User",userSchema)
+export let User=mongoose.model("User",userSchema)

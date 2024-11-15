@@ -1,16 +1,17 @@
 
 import  express from 'express'
-import { connectDb } from './db/userDb.js'
+import  connectDb  from './db/userDb.js'
 import dotenv from 'dotenv';
 import { a1 } from './app.js';
 
-dotenv.config();
+dotenv.config({path:"./.env"});
 
 let app=express()
 let port =process.env.PORT
 
 
-connectDb();
+connectDb()
+
 app.use(a1)
 
 app.get("/",(req,res)=>{

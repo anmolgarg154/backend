@@ -8,7 +8,7 @@ import fs from 'fs'
         cloud_name: 'ddntzcs1i', 
         api_key: '184951293422667', 
     //    api_secret: '<your_api_secret>' // Click 'View API Keys' above to copy your API secret
-         api_secret: 'l2ZehY-JBq1YS6sIc8KUqC-iEco'
+         api_secret: '<l2ZehY-JBq1YS6sIc8KUqC-iEco>'
     });
 
     const uploadOnCloudnary = async (localPathFile)=>{
@@ -30,15 +30,3 @@ import fs from 'fs'
         }
     }
     export {uploadOnCloudnary};
-
-    // const uploadResult = await cloudinary.uploader
-    //    .upload(
-    //        'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-    //            public_id: 'shoes',
-    //        }
-    //    )
-    //    .catch((error) => {
-    //        console.log(error);
-    //    });
-    
-    // console.log(uploadResult);

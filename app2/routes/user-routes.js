@@ -5,7 +5,14 @@ let router=Router();
 
 router.route("/register").post(
     upload.fields([
-        {},{}
-    ]) ,registerUser)
+        {
+            name:"avatar",
+            maxCount:1
+        },{
+            name:"coverImage",
+            maxCount:1
+        }
+    ]) ,
+    registerUser)
 
 export default router;
